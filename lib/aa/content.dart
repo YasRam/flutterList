@@ -14,7 +14,7 @@ class Content extends StatelessWidget {
         children: [
           Text(
             "welcome, "+ name,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.blue),
           ),
           ElevatedButton(onPressed: () {
             Navigator.pop(context);

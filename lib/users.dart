@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:transfer/aa/content.dart';
+import 'package:transfer/ditales.dart';
 
 class ItemsScreen extends StatefulWidget {
   @override
@@ -28,7 +28,6 @@ class _OneItemScreen extends State<ItemsScreen> {
             builder: ((context, snapshot) {
               if (snapshot.hasData) {
                 var myItems = (snapshot.data as List<OneItem>);
-                print(myItems);
                 return ListView.builder(
                     itemCount: myItems.length,
                     itemBuilder: ((context, index) => ItemRow(myItems[index])));
@@ -45,9 +44,9 @@ class ItemRow extends StatelessWidget {
   ItemRow(this._item);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
       height: MediaQuery.of(context).size.height / 5,
+      // width: MediaQuery.of(context).size.width / 3,
       child: Center(
           child: Card(
         child: Row(children: [
@@ -57,6 +56,13 @@ class ItemRow extends StatelessWidget {
                 "https://play-lh.googleusercontent.com/5e7z5YCt7fplN4qndpYzpJjYmuzM2WSrfs35KxnEw-Ku1sClHRWHoIDSw3a3YS5WpGcI"),
           ),
           Text(_item.title),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ditales(_item);
+                }));
+              },
+              child: Text("=>")),
         ]),
       )),
     );
