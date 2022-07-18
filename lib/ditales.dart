@@ -17,9 +17,8 @@ class ditales extends StatelessWidget {
         ),
         Text(
           item.content,
-          style: TextStyle(color: Colors.black),
-          // textAlign: TextAlign.center,
-          
+          style: TextStyle(color: Colors.black,fontSize: 25),
+          textAlign: TextAlign.center,
         ),
         ElevatedButton(
             onPressed: () {

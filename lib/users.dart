@@ -41,6 +41,7 @@ class _OneItemScreen extends State<ItemsScreen> {
 
 class ItemRow extends StatelessWidget {
   var _item;
+  String url ="https://freedomdefined.org/upload/6/62/Mfalzon-freecontent_logo01--normal.png";
   ItemRow(this._item);
   @override
   Widget build(BuildContext context) {
@@ -51,9 +52,11 @@ class ItemRow extends StatelessWidget {
           child: Card(
         child: Row(children: [
           Container(
-            //child: Image.network(_item.picture),
             child: Image.network(
-                "https://play-lh.googleusercontent.com/5e7z5YCt7fplN4qndpYzpJjYmuzM2WSrfs35KxnEw-Ku1sClHRWHoIDSw3a3YS5WpGcI"),
+                //     _item.picture
+                //     ""
+                "https://freedomdefined.org/upload/6/62/Mfalzon-freecontent_logo01--normal.png"
+                ),
           ),
           Text(_item.title),
           ElevatedButton(
