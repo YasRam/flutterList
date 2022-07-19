@@ -1,8 +1,7 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:transfer/aa/content.dart';
-import 'package:transfer/ditales.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ItemsScreen extends StatefulWidget {
   @override
@@ -12,99 +11,87 @@ class ItemsScreen extends StatefulWidget {
 }
 
 class _OneItemScreen extends State<ItemsScreen> {
-  late Future<List<OneItem>> item;
+  String? text;
+  TextEditingController textEditingController = TextEditingController();
   @override
   void initState() {
+    // TODO: implement initState
+    textEditingController.text = "controler";
     super.initState();
-    item = RemoteDataSource().fitchItems();
-    print(item);
   }
 
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return Scaffold(
-        body: FutureBuilder(
-            future: item,
-            builder: ((context, snapshot) {
-              if (snapshot.hasData) {
-                var myItems = (snapshot.data as List<OneItem>);
-                return ListView.builder(
-                    itemCount: myItems.length,
-                    itemBuilder: ((context, index) => ItemRow(myItems[index])));
-              } else if (snapshot.hasError) {
-                return Container();
-              }
-              return CircularProgressIndicator();
-            })));
-  }
-}
+      body: Container(
+        padding: EdgeInsets.all(30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: textEditingController,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(), hintText: "type here"),
+            ),
 
-class ItemRow extends StatelessWidget {
-  var _item;
-  String url ="https://freedomdefined.org/upload/6/62/Mfalzon-freecontent_logo01--normal.png";
-  ItemRow(this._item);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 5,
-      // width: MediaQuery.of(context).size.width / 3,
-      child: Center(
-          child: Card(
-        child: Row(children: [
-          Container(
-            child: Image.network(
-                //     _item.picture
-                //     ""
-                "https://freedomdefined.org/upload/6/62/Mfalzon-freecontent_logo01--normal.png"
-                ),
-          ),
-          Text(_item.title),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ditales(_item);
-                }));
-              },
-              child: Text("=>")),
-        ]),
-      )),
+            SizedBox(height: 20,),
+
+            ElevatedButton(
+                onPressed: () {
+                  print(textEditingController.text);
+                  // textEditingController.clear();
+                  writeToFile(textEditingController.text);
+                },
+                child: Text("save me!")),
+
+            SizedBox(height: 30,),
+            Divider(color: Colors.red,),
+            SizedBox(height: 30,),
+
+            Text(text ?? "oldtext"),
+            
+            SizedBox(height: 20,),
+            
+            ElevatedButton(
+                onPressed: () {
+                  // print("load data");
+                  loadData();
+                  print(text);
+                  // readFromFile();
+                },
+                child: Text("Load Data"))
+          ],
+        ),
+      ),
     );
   }
-}
 
-class OneItem {
-  String id;
-  String picture;
-  String title;
-  String content;
-  OneItem(this.id, this.picture, this.title, this.content);
-  factory OneItem.fromJson(Map<String, dynamic> json) {
-    return OneItem(
-      json['id'],
-      json['picture'],
-      json['title'],
-      json['content'],
-    );
+  void loadData() async {
+    var name = await rootBundle.loadString("assets/text.txt");
+    // text = name;
+    // print(text);
+
+    setState(() {
+      text = name;
+    });
   }
-}
 
-class RemoteDataSource {
-  Future<List<OneItem>> fitchItems() async {
-    var response = await http.get(
-        Uri.parse('http://62d4154fcd960e45d452f790.mockapi.io/api/article'));
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      var list = (jsonResponse as List);
-      var newList = list.map((e) => OneItem.fromJson(e)).toList();
-      return newList;
-    } else {
-      throw Exception("Can't fitch data");
-    }
+  void writeToFile(String text) async {
+    var dir = await getApplicationDocumentsDirectory();
+    var path = dir.path;
+    var myFile = File('$path/itiexample.txt');
+    await myFile.writeAsString(text);
   }
-}
 
-class ItemUseCase {
-  Future<List<OneItem>> getItems() {
-    return RemoteDataSource().fitchItems();
+  void readFromFile() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    var path = dir.path;
+    var myFile = File('$path/itiexample.txt');
+    var texty = await myFile.readAsString();
+
+    setState(() {
+      text =  texty;
+    });
   }
 }
